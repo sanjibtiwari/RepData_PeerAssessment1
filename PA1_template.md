@@ -19,7 +19,8 @@ The different variables in the dataset are
 
 * interval: The interval at which readings were taken
 
-```{r, echo = TRUE, warning = FALSE, message = FALSE}
+
+```r
 # loading required libraries
 library(tidyverse) # for data manupulation/wrangling
 library(ggplot2) # for vizualization
@@ -27,19 +28,30 @@ library(lubridate) # for working with dates
 ```
 
 The following code reads the data and converts the date (Make sure you have set up your working directory correctly)
-```{r,echo = TRUE}
+
+```r
 activity <- read.csv("activity.csv")
 activity$date <- ymd(activity$date)
 ```
 
 Taking a look at the data
-```{r, echo = TRUE}
+
+```r
 glimpse(activity)
+```
+
+```
+## Observations: 17,568
+## Variables: 3
+## $ steps    <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N...
+## $ date     <date> 2012-10-01, 2012-10-01, 2012-10-01, 2012-10-01, 2012...
+## $ interval <int> 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 100, 10...
 ```
 
 ##Part A Analysis: What is mean total number of steps taken per day?
 
-```{r, echo = TRUE }
+
+```r
 steps_stat_per_day <- activity %>% 
   select(date, steps) %>% 
   group_by(date) %>% 
@@ -50,15 +62,27 @@ steps_stat_per_day <- activity %>%
 ```
 
 The following code displays the mean and median number of steps taken per day
-```{r, echo = TRUE}
-str_glue("The mean number of steps taken per day is {round(mean(steps_stat_per_day$total_steps, na.rm =TRUE),2)}")
 
+```r
+str_glue("The mean number of steps taken per day is {round(mean(steps_stat_per_day$total_steps, na.rm =TRUE),2)}")
+```
+
+```
+## The mean number of steps taken per day is 9354.23
+```
+
+```r
 str_glue("The median number of steps taken per day is {round(median(steps_stat_per_day$total_steps, na.rm =TRUE),2)}")
+```
+
+```
+## The median number of steps taken per day is 10395
 ```
 
 Histogramm of the total number of steps taken each day
 
-```{r, echo = TRUE}
+
+```r
 steps_stat_per_day %>% 
   
   ggplot(aes(total_steps)) + 
@@ -70,14 +94,16 @@ steps_stat_per_day %>%
         x = "Total Steps",
         y = "Frequency") +
   theme_light()
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 
 ## Part B Analysis: What is the average daily activity pattern?
 
 Data manupulation
-```{r, echo = TRUE}
+
+```r
 interval_mean_steps <- activity %>% 
   select(steps, interval) %>% 
   group_by(interval) %>% 
@@ -87,7 +113,8 @@ interval_mean_steps <- activity %>%
 
 Time Series plot
 
-```{r, echo = TRUE}
+
+```r
 interval_mean_steps %>% 
   ggplot(aes(interval,mean_steps)) +
   
@@ -100,22 +127,30 @@ occurs at around the 800 minute interval",
        y = "Average Number of Steps") +
   
    theme_light()
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 
 ## Part C Analysis: Imputing Missing Values
 
 Total number of missing values in the dataset
 
-```{r, echo = TRUE}
+
+```r
 str_glue(" The number of missing values in the activity data set steps observation 
          is {sum(is.na(activity$steps))}. This is only {round(sum(is.na(activity$steps))/nrow(activity)*(100),0)}% of the total value")
 ```
 
+```
+## The number of missing values in the activity data set steps observation 
+## is 2304. This is only 13% of the total value
+```
+
 we'll use the mean for each interval to impute the missing values.
 
-```{r, echo = TRUE}
+
+```r
 activity_no_missing <- activity %>% 
         select(steps, interval) %>% 
         group_by(interval) %>% 
@@ -125,14 +160,20 @@ activity_no_missing <- activity %>%
 
 Checking if there are NAs in the mean used to impute
 
-```{r, echo = TRUE}
+
+```r
 sum(is.na(activity_no_missing$mean_steps_interval))
+```
+
+```
+## [1] 0
 ```
 Since the sum is zero, we are good.
 
 Imputing missing values with the mean for each interval
 
-```{r, echo = TRUE}
+
+```r
 activity_no_missing_stat <- activity %>%
         left_join(.,activity_no_missing, by = "interval") %>% 
         mutate(steps = ifelse(is.na(steps), mean_steps_interval, steps)) %>% 
@@ -146,7 +187,8 @@ activity_no_missing_stat <- activity %>%
 
 Histogram of the total number of steps taken each day
 
-```{r, echo = TRUE}
+
+```r
 activity_no_missing_stat %>% 
   
   ggplot(aes(total_steps)) +
@@ -161,14 +203,29 @@ which isn't any different than when the missing values were excluded",
   theme_light()
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+
 The mean and median total number of steps taken per day
 
-```{r, echo = TRUE}
+
+```r
 str_glue("The mean number of steps taken per day after replacing missing values 
          is {round(mean(activity_no_missing_stat$total_steps, na.rm =TRUE),2)}")
+```
 
+```
+## The mean number of steps taken per day after replacing missing values 
+## is 10766.19
+```
+
+```r
 str_glue("The median number of steps taken per day after replacing missing values
          is {round(median(activity_no_missing_stat$total_steps, na.rm =TRUE),2)}")
+```
+
+```
+## The median number of steps taken per day after replacing missing values
+## is 10766.19
 ```
 
 This is almost similar to the mean and median for the dataset where we dropped the missing values
@@ -177,7 +234,8 @@ This is almost similar to the mean and median for the dataset where we dropped t
 
 Extracting the day information, setting an indicator for weekdays and weekends. The indicators are then  
 turned into a factor variable
-```{r, echo = TRUE}
+
+```r
 days_activity <- activity %>% 
         mutate(day_of_week = weekdays(date)) %>% 
         mutate(day_indicator = case_when(
@@ -194,7 +252,8 @@ ungroup(.)
 Panel Plot containing a time series plot of the 5-minute interval and the average number of steps taken  
 for weekends and weekdays
 
-```{r, echo = TRUE, warning = FALSE}
+
+```r
 days_activity %>% 
         ggplot(aes(interval,mean_steps)) +
         
@@ -210,4 +269,6 @@ while weekend average steps stay pretty stable",
         
         theme_light()
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
