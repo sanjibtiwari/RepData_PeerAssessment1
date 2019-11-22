@@ -96,7 +96,7 @@ steps_stat_per_day %>%
   theme_light()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](instructions_fig/unnamed-chunk-6-1.png)<!-- -->
 
 
 ## Part B Analysis: What is the average daily activity pattern?
@@ -129,7 +129,7 @@ occurs at around the 800 minute interval",
    theme_light()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](instructions_fig/unnamed-chunk-8-1.png)<!-- -->
 
 
 ## Part C Analysis: Imputing Missing Values
@@ -203,7 +203,7 @@ which isn't any different than when the missing values were excluded",
   theme_light()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](instructions_fig/unnamed-chunk-13-1.png)<!-- -->
 
 The mean and median total number of steps taken per day
 
@@ -270,5 +270,5 @@ while weekend average steps stay pretty stable",
         theme_light()
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](instructions_fig/unnamed-chunk-16-1.png)<!-- -->
 
